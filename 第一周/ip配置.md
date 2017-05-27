@@ -22,7 +22,8 @@
         DNS1=192.168.1.1     #设置DNS（常用119.29.29.29）  
         HWADDR=00:0C:29:B8:2B:07 #网卡mac地址  
 
-
+##### 配置完了之后不要忘记重启网络服务  
+    ```systemctl restart network.service``` 
 
 
 
