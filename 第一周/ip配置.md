@@ -36,7 +36,7 @@
 ![image](https://github.com/billxq/notes/blob/master/images/bashrc.jpg)  
 
 ### VMWare 虚拟机与主机的三种通信方式  
-1. Bridged方式  
+1. Bridged方式  
 虚拟系统的IP可以设置成与本机系统在同一个网段，虚拟机相当于网络内部一个独立的机器，与本机共同插在一个Hub上，网络内的其他机器可以访问虚拟机，虚拟机也可以访问网络内其他机器，当然与本机的互访也不成问题。主机拔掉网线后，虚拟机无法与主机通过网络的方式进行通讯。  
 
 2. NAT方式（需要用vmnet8）  
