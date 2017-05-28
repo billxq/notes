@@ -1,172 +1,191 @@
-¿ª»úÆô¶¯Á÷³Ì
 
-grub and boot
-¡ñ Centos5£¬6µÄ¿ª»úÆô¶¯Á÷³Ì
-¡ñ grub
-¡ñ Centos7µÄ¿ª»úÆô¶¯Á÷³Ì
-Centos5,6µÄ¿ª»úÆô¶¯Á÷³Ì
+### å¼€æœºå¯åŠ¨æµç¨‹
 
-initrd / initramfs
-Ò»°ã´æ´¢ÔÚ/bootÄ¿Â¼ÏÂ£¬ÒÔ.imgÎª½áÎ²µÄÎÄ¼ş£¬ÊÇÒ»¸öĞ¡ĞÍµÄ¸ùÄ¿Â¼ÏµÍ³µÄÓ³ÏñÎÄ¼ş£¬ÀïÃæ´æ·ÅÁË¸÷ÀàÏµÍ³±ØĞëµÄÄ£×é£¬ÎªÁË½â¾öÄÚºËÔÚ¼ÓÔØÍê³ÉÖ®ºóÃ»ÓĞÄ£×éÎŞ·¨·ÃÎÊ´ÅÅÌ¼ÓÔØrootfsµÄÎÊÌâ¡£
-rc
-ÔÚinittabµÄÎÄ¼şÖĞ£¬ÓĞÕâÃ´Ò»ĞĞÃüÁî¡¡si::sysinit:/etc/rc.d/rc.sysinit £¬Õâ¾ä»°±íÊ¾½«ÉèÖÃµÄrun levelµÄÖµ×÷Îª²ÎÊı¸³Óè¸ørcÕâ¸ö½Å±¾¡£
-ÎÒÃÇÏÈÀ´¿´Ò»ÏÂrc£¬´ò¿ª/etc/rc.d/rc£º
-×îÖ÷ÒªµÄÁ½¶Î£º
-for i in /etc/rc$runlevel.d/K* ; do #Ñ­»·ÁĞ³ö/etc/rc#.dÄ¿Â¼ÏÂÒÔK¿ªÍ·µÄÎÄ¼ş²¢¸³Öµ¸øi¡£
+grub and boot  
+  â— Centos5ï¼Œ6çš„å¼€æœºå¯åŠ¨æµç¨‹  
+  â— grub  
+  â— Centos7çš„å¼€æœºå¯åŠ¨æµç¨‹  
+Centos5,6çš„å¼€æœºå¯åŠ¨æµç¨‹  
+![image](https://github.com/billxq/notes/blob/master/images/5281.jpeg)  
+![image](https://github.com/billxq/notes/blob/master/images/5282.jpeg)  
 
-        # Check if the subsystem is already up.
-        subsys=${i#/etc/rc$runlevel.d/K??}           #×ö×Ö·û´®ÇĞÆ¬£¬É¾È¥µÚÒ»¸ö/etc/rc$.d/K##µÄ²¿·Ö¡£
-        [ -f /var/lock/subsys/$subsys -o -f /var/lock/subsys/$subsys.init ] || continue     #Èç¹û²»´æÔÚÏàÍ¬µÄÎÄ¼şÃû»òÕßÎÄ¼şÃû.initµÄ·şÎñ½Å±¾£¬ÔòÌø³öµ±Ç°ÕâÒ»ÂÖÑ­»·¡£
-        check_runlevel "$i" || continue  #¼ì²é·ûºÅÁ´½ÓÊÇ·ñÓĞĞ§¡£
-        # Bring the subsystem down.
-        [ -n "$UPSTART" ] && initctl emit --quiet stopping JOB=$subsys  
-        $i stop                                                         #´«µİµ±Ç°·şÎñ³ÌĞòstop²ÎÊı¡£
-        [ -n "$UPSTART" ] && initctl emit --quiet stopped JOB=$subsys       
-    done
-    for i in /etc/rc$runlevel.d/S* ; do          #Ñ­»·ÁĞ³ö/etc/rc#.dÄ¿Â¼ÏÂÒÔS¿ªÍ·µÄÎÄ¼ş²¢¸³Öµ¸øi¡£
-        # Check if the subsystem is already up.
-        subsys=${i#/etc/rc$runlevel.d/S??}      subsys      #×ö×Ö·û´®ÇĞÆ¬£¬É¾È¥µÚÒ»¸ö/etc/rc$.d/S##µÄ²¿·Ö¡£
-        [ -f /var/lock/subsys/$subsys ] && continue         Èç¹û´æÔÚÓë·şÎñ½Å±¾ÏàÍ¬µÄÎÄ¼şÃûµÄÎÄ¼ş¾ÍÌø³öµ±Ç°ÕâÂÖÑ­»·¡£
-        [ -f /var/lock/subsys/$subsys.init ] && continue        Èç¹û´æÔÚ·şÎñ½Å±¾.initµÄÎÄ¼şÃûµÄÎÄ¼ş¾ÍÌõºÍ´×µ±Ç°ÕâÂÖÑ­»·¡£
-        check_runlevel "$i" || continue     ¼ì²é·ûºÅÁ¬½ÓÊÇ·ñÓĞĞ§¡£
-        # If we're in confirmation mode, get user confirmation
-        if [ "$do_confirm" = "yes" ]; then      
-            confirm $subsys
-            rc=$?
-            if [ "$rc" = "1" ]; then
-                continue
-            elif [ "$rc" = "2" ]; then
-                do_confirm="no"
+### initrd / initramfs  
+ä¸€èˆ¬å­˜å‚¨åœ¨/bootç›®å½•ä¸‹ï¼Œä»¥.imgä¸ºç»“å°¾çš„æ–‡ä»¶ï¼Œæ˜¯ä¸€ä¸ªå°å‹çš„æ ¹ç›®å½•ç³»ç»Ÿçš„æ˜ åƒæ–‡ä»¶ï¼Œé‡Œé¢å­˜æ”¾äº†å„ç±»ç³»ç»Ÿå¿…é¡»çš„æ¨¡ç»„ï¼Œä¸ºäº†è§£å†³å†…æ ¸åœ¨åŠ è½½å®Œæˆä¹‹åæ²¡æœ‰æ¨¡ç»„æ— æ³•è®¿é—®ç£ç›˜åŠ è½½rootfsçš„é—®é¢˜ã€‚  
+### rc  
+åœ¨inittabçš„æ–‡ä»¶ä¸­ï¼Œæœ‰è¿™ä¹ˆä¸€è¡Œå‘½ä»¤ã€€si::sysinit:/etc/rc.d/rc.sysinit ï¼Œè¿™å¥è¯è¡¨ç¤ºå°†è®¾ç½®çš„run levelçš„å€¼ä½œä¸ºå‚æ•°èµ‹äºˆç»™rcè¿™ä¸ªè„šæœ¬ã€‚  
+æˆ‘ä»¬å…ˆæ¥çœ‹ä¸€ä¸‹rcï¼Œæ‰“å¼€/etc/rc.d/rcï¼š
+   æœ€ä¸»è¦çš„ä¸¤æ®µï¼š  
+        for i in /etc/rc$runlevel.d/K* ; do              #å¾ªç¯åˆ—å‡º/etc/rc#.dç›®å½•ä¸‹ä»¥Kå¼€å¤´çš„æ–‡ä»¶å¹¶èµ‹å€¼ç»™iã€‚  
+
+            # Check if the subsystem is already up.
+            subsys=${i#/etc/rc$runlevel.d/K??}           #åšå­—ç¬¦ä¸²åˆ‡ç‰‡ï¼Œåˆ å»ç¬¬ä¸€ä¸ª/etc/rc$.d/K##çš„éƒ¨åˆ†ã€‚
+            [ -f /var/lock/subsys/$subsys -o -f /var/lock/subsys/$subsys.init ] || continue     #å¦‚æœä¸å­˜åœ¨ç›¸åŒçš„æ–‡ä»¶åæˆ–è€…æ–‡ä»¶å.initçš„æœåŠ¡è„šæœ¬ï¼Œåˆ™è·³å‡ºå½“å‰è¿™ä¸€è½®å¾ªç¯ã€‚
+            check_runlevel "$i" || continue  #æ£€æŸ¥ç¬¦å·é“¾æ¥æ˜¯å¦æœ‰æ•ˆã€‚
+
+            # Bring the subsystem down.
+            [ -n "$UPSTART" ] && initctl emit --quiet stopping JOB=$subsys  
+            $i stop                                                         #ä¼ é€’å½“å‰æœåŠ¡ç¨‹åºstopå‚æ•°ã€‚
+            [ -n "$UPSTART" ] && initctl emit --quiet stopped JOB=$subsys       
+        done
+
+
+        for i in /etc/rc$runlevel.d/S* ; do          #å¾ªç¯åˆ—å‡º/etc/rc#.dç›®å½•ä¸‹ä»¥Så¼€å¤´çš„æ–‡ä»¶å¹¶èµ‹å€¼ç»™iã€‚
+
+            # Check if the subsystem is already up.
+            subsys=${i#/etc/rc$runlevel.d/S??}      subsys      #åšå­—ç¬¦ä¸²åˆ‡ç‰‡ï¼Œåˆ å»ç¬¬ä¸€ä¸ª/etc/rc$.d/S##çš„éƒ¨åˆ†ã€‚
+            [ -f /var/lock/subsys/$subsys ] && continue         å¦‚æœå­˜åœ¨ä¸æœåŠ¡è„šæœ¬ç›¸åŒçš„æ–‡ä»¶åçš„æ–‡ä»¶å°±è·³å‡ºå½“å‰è¿™è½®å¾ªç¯ã€‚
+            [ -f /var/lock/subsys/$subsys.init ] && continue        å¦‚æœå­˜åœ¨æœåŠ¡è„šæœ¬.initçš„æ–‡ä»¶åçš„æ–‡ä»¶å°±æ¡å’Œé†‹å½“å‰è¿™è½®å¾ªç¯ã€‚
+            check_runlevel "$i" || continue     æ£€æŸ¥ç¬¦å·è¿æ¥æ˜¯å¦æœ‰æ•ˆã€‚
+
+            # If we're in confirmation mode, get user confirmation
+            if [ "$do_confirm" = "yes" ]; then      
+                confirm $subsys
+                rc=$?
+                if [ "$rc" = "1" ]; then
+                    continue
+                elif [ "$rc" = "2" ]; then
+                    do_confirm="no"
+                fi
             fi
-        fi
-        update_boot_stage "$subsys"
-        # Bring the subsystem up.   
-        [ -n "$UPSTART" ] && initctl emit --quiet starting JOB=$subsys
-        if [ "$subsys" = "halt" -o "$subsys" = "reboot" ]; then     Èç¹ûÖ´ĞĞµ½halt»òÕßreboot½Å±¾£¬¾Í
-            export LC_ALL=C     È¥³ıËùÓĞ±¾µØ»¯µÄÉèÖÃ
-            exec $i start       ´«µİstart²ÎÊı¸ørc#
-        fi
-        $i start        ´«µİstart²ÎÊı¸ø·şÎñ½Å±¾¡£
-        [ -n "$UPSTART" ] && initctl emit --quiet started JOB=$subsys
-    done
-¹¦ÄÜ¾ÍÊÇ¸ù¾İÑ¡ÔñµÄrun levelÈ¥´«µİ¶ÔÓ¦µÄ/etc/rc.d/rcÒ»¸öÊı×Ö£¬È»ºórc½Å±¾¾Í»ØÈ¥¼ì²éÏà¶ÔÓ¦µÄ/etc/rc.d/rc#.dÄ¿Â¼ÏÂµÄÎÄ¼ş£¬½«K[##¹Ø±ÕÓÅÏÈ¼¶]¿ªÍ·µÄÎÄ¼ş´«µİstop²ÎÊı£¬½«S[##Æô¶¯ÓÅÏÈ¼¶]¿ªÍ·µÄÎÄ¼ş´«µİstart²ÎÊı£¬À´´ò¿ª¹Ø±Õ·şÎñ¡£
-chkconfig£º¸üĞÂrunlevelµÄÆô¶¯·şÎñ¡£
-chkconfig [¡ªadd | ¡ªdel] name £º½«Ò»¸ö·şÎñÌí¼Ó/É¾³ı½øÏµÍ³·şÎñ¡£
-chkconfig ¡ªlist name£º²éÑ¯Ò»¸ö·şÎñÔÚÃ¿Ò»¸örun levelÏÂÊÇ·ñÎª¿ª»úÆô¶¯¡£
-chkconfig [¡ªlevel levels] [¡ªtype type] [¡ªno-redirect] name £ºÉèÖÃÖ¸¶¨µÄÄ³Ò»¸örun levelÏÂÌØ¶¨·şÎñµÄ×´Ì¬¡£
-grub
-´ó¼Ò¶¼ÖªµÀÔÚ¼ÆËã»ú´ÓbiosÖĞ¶ÁÈ¡µ½¿ª»úÆô¶¯Ë³ĞòÖ®ºó°´ĞòÈ¥¶ÁÈ¡MBRµÄ¹ı³ÌÎÒÃÇ³ÆÎªboot lorder£¬¼ÆËã»úÔÚÕâ¸ö½×¶Î»áÈ¥¶ÁÈ¡MBRÖĞÕ¼ÁË446ByteµÄboot loaderÖĞµÄ³ÌĞò£¬¶øÔÚCentosµÄ·¢ĞĞ°æÖĞ»ù±¾ÉÏ¶¼ÊÇGRUBÕâ¸ö³ÌĞò¡£
-446ByteÓĞ¶àÉÙ´óÄØ£¿446¸öÓ¢ÎÄ×Ö·û£¬ÒªÔÚÕâÃ´Ğ¡µÄ¿Õ¼äÖĞ´æ·ÅÒ»¸ö¹¦ÄÜÈç´ËÇ¿´óµÄ³ÌĞò£¬ÊÇÔõÃ´×öµ½µÄÄØ£¿
-grub·ÖÎªÈı²¿·Ö£¬Îªstage1£¬stage1.5ºÍstage2£¬stage1´æ·ÅÔÚboot lorderÖĞ£¬stage1Ö¸Ïò´ÅÅÌÖĞµÄ´æ·Å1.5ºÍ2µÄÄ¿Â¼£¨Ò»°ãÎªboot£©£¬È»ºóÍ¨¹ıstage1.5ÎÄ¼şµÄ¼òµ¥Çı¶¯À´»ñµÃ/bootµÄÄÚÈİµÃµ½stage2¡£
 
-grubµÄÉè¶¨ÎÄ¼ş
-/boot/grub/grub.conf
-ÓĞĞ©bootÄ¿Â¼ÖĞ»áÓĞmenu.lstÎÄ¼ş£¬×ĞÏ¸¿´Å¶Õâ¸öÎÄ¼şÊÇÍ¨¹ıÈíÁ´½ÓµÄĞÎÊ½Á¬µ½grub.confÎÄ¼şÈ¥µÄ¡£
-Ö÷ÒªÊôĞÔ£º
-default=0 Ä¬ÈÏÆô¶¯µÄÏµÍ³£¬0´ú±íµÚÒ»¸ö¡£
-timeout=5 ³¬Ê±Ê±¼ä¡£
-splashimage=(hd0,6)/boot/grub/splash.xpm.gz grubµÄ±³¾°»­Ãæ£¬ÕâÀïÎªÖ¸Ã÷ÁËsplash.xpmÕâÕÅÍ¼Æ¬~
-hiddenmenu ÊÇ·ñÒş²ØgrubµÄÆô¶¯²Ëµ¥¡£
-title Fedora Core (2.6.11-1.1369_FC4) Õâ¸ö¾ÍÊÇÎÒÃÇÔÚgrub½çÃæ¿´µ½µÄµÚÒ»¸öÒ³ÃæµÄÑ¡ÏîÄÚÈİÀ²~
-root (hd0,6) Ö¸¶¨Õâ¸öÏµÍ³µÄ¸ùÄ¿Â¼
-kernel /boot/vmlinuz-2.6.11-1.1369_FC4 ro root=LABEL=/ Ö¸¶¨ºËĞÄÒÔ¼°rootfs
-initrd /boot/initrd-2.6.11-1.1369_FC4.img Ö¸¶¨initramfs
-title WinXp Õâ¸ö¾ÍÊÇµÚ¶ş¸öÀ²£¬XPÅ¶~
-rootnoverify (hd0,0) ÀàËÆroot£¬µ«ÊÇ²»²âÊÔ°²×°¸Ã·ÖÇø¡£
-chainloader +1 GRUB¶ÁÈë·ÖÇøµÄµÚÒ»¸öÉÈÇøµÄÒıµ¼¼ÇÂ¼¡£
-grubÊÖ¶¯Ö¸¶¨Òıµ¼
-grubÃüÁîĞĞÏÂ£º
-grub> find /PATH£º¿ÉÒÔ²éÑ¯ÊÇ·ñÓĞÂ·¾¶¡£
-grub> root (hd0,1)£ºÖ¸¶¨¸ùÉè±¸¡£
-grub> kernel /vmlinux-version-relias.arch ro grub> root=ROOTFS_PATH£ºÖ¸¶¨ÄÚºË¡£
-grub> initrd /initrd-version-relias.arch.img£ºÖ¸¶¨ramfsÎÄ¼ş¡£
-grub> boot£º¿ªÊ¼Òıµ¼¡£
+            update_boot_stage "$subsys"
+            # Bring the subsystem up.   
+            [ -n "$UPSTART" ] && initctl emit --quiet starting JOB=$subsys
+            if [ "$subsys" = "halt" -o "$subsys" = "reboot" ]; then     å¦‚æœæ‰§è¡Œåˆ°haltæˆ–è€…rebootè„šæœ¬ï¼Œå°±
+                export LC_ALL=C     å»é™¤æ‰€æœ‰æœ¬åœ°åŒ–çš„è®¾ç½®
+                exec $i start       ä¼ é€’startå‚æ•°ç»™rc#
+            fi
+            $i start        ä¼ é€’startå‚æ•°ç»™æœåŠ¡è„šæœ¬ã€‚
+            [ -n "$UPSTART" ] && initctl emit --quiet started JOB=$subsys
+        done
+åŠŸèƒ½å°±æ˜¯æ ¹æ®é€‰æ‹©çš„run levelå»ä¼ é€’å¯¹åº”çš„/etc/rc.d/rcä¸€ä¸ªæ•°å­—ï¼Œç„¶årcè„šæœ¬å°±å›å»æ£€æŸ¥ç›¸å¯¹åº”çš„/etc/rc.d/rc#.dç›®å½•ä¸‹çš„æ–‡ä»¶ï¼Œå°†K[##å…³é—­ä¼˜å…ˆçº§]å¼€å¤´çš„æ–‡ä»¶ä¼ é€’stopå‚æ•°ï¼Œå°†S[##å¯åŠ¨ä¼˜å…ˆçº§]å¼€å¤´çš„æ–‡ä»¶ä¼ é€’startå‚æ•°ï¼Œæ¥æ‰“å¼€å…³é—­æœåŠ¡ã€‚ 
+chkconfigï¼šæ›´æ–°runlevelçš„å¯åŠ¨æœåŠ¡ã€‚  
+chkconfig [--add | --del] name ï¼šå°†ä¸€ä¸ªæœåŠ¡æ·»åŠ /åˆ é™¤è¿›ç³»ç»ŸæœåŠ¡ã€‚  
+chkconfig --list nameï¼šæŸ¥è¯¢ä¸€ä¸ªæœåŠ¡åœ¨æ¯ä¸€ä¸ªrun levelä¸‹æ˜¯å¦ä¸ºå¼€æœºå¯åŠ¨ã€‚  
+chkconfig [--level levels] [--type type] [--no-redirect] name <on|off|reset|resetpriorities>ï¼šè®¾ç½®æŒ‡å®šçš„æŸä¸€ä¸ªrun levelä¸‹ç‰¹å®šæœåŠ¡çš„çŠ¶æ€ã€‚  
 
-grub°²×°ÓëĞŞ¸´
-ÃüÁîĞĞÖĞ£º
-grub-install ¡ªroot-directory=/boot /dev/sda £ºÖ¸¶¨bootÄ¿Â¼ÓëstageÒªĞ´ÈëµÄ´ÅÅÌ¡£
-grubÃüÁîĞĞÖĞ£º
-grub> chroot /mnt/sysimage £º¹ÒÔØÕæÕıµÄrootfs¡£
-grub> root (hd0,1)£ºÖ¸¶¨bootËùÔÚµÄ¸ùÄ¿Â¼¡£
-grub> setup (hd0)£º½«stage1Ğ´Èëµ½MBRÖĞ¡£
-Centos7µÄ¿ª»úÆô¶¯Á÷³Ì
-ÓëCentos5£¬6Ïà±È£¬Centos7½«ÏµÍ³Æô¶¯µÄµÚÒ»Ö§³ÌĞò´Óinit±ä³Ésystemd£¬systemd²¢²»ÊÇÒ»¸ö´¿´âµÄinitÏµÍ³£¬¶øÇÒ»¹ÄÜ¹ÜÀíÏµÍ³µÄ¸÷ÖÖdaemon£¬²¢ÓĞÓÃµÄ¶à¸öĞÂÌØĞÔÓë¹¦ÄÜ¡£
-¡ñ Ö§³ÖÆ½ĞĞÆô¶¯·şÎñ£¬²¢°´ÕÕÏàÒÀĞÔÆô¶¯³ÌĞò
-¡ñ °´ĞèÆô¶¯
-¡ñ Ö§³Ö¿ìÕÕÓë×´Ì¬»Ö¸´
-¡ñ c groupÔ¤ÉèÏŞÖÆÓ²¼ş×ÊÔ´ ¡­
-Ö§³ÖÆ½ĞĞÆô¶¯·şÎñ£¬²¢°´ÕÕÏàÒÀĞÔÆô¶¯³ÌĞò
-¶Ô±ÈinitµÄ½Å±¾Æô¶¯£¬systemd´óµ¨µÄ½«ËùÓĞĞèÒªÆô¶¯µÄ¶¼·ÖÎªÒ»¸öÒ»¸öµÄunit£¬²¢ÒÔ¶ÔÓ¦µÄºó×ºÀ´Çø·Ö£¬´óÖÂ·ÖÎª£º
-¡ñ ÏµÍ³·şÎñ£¨.service£©
-¡ñ ¹ÒÔØµã£¨.mount£©
-¡ñ sockets£¨.sockets£©
-¡ñ ÏµÍ³Éè±¸£¨.device£©
-¡ñ ½»»»·ÖÇø£¨.swap£©
-¡ñ ÎÄ¼şÂ·¾¶£¨.path£©
-¡ñ Æô¶¯Ä¿±ê£¨.target£©
-¡ñ systemd¼ÆÊ±Æ÷£¨.timer£©
-systemd»áÎªÃ¿Ò»¸öĞèÒªÆô¶¯µÄ·şÎñÆô¶¯Ò»¸öÌ×½Ó×Ö£¬À´Ê¹²»Í¬µÄdaemonÖ®¼ä¿ÉÒÔÍ¨ĞÅ£¬²¢ÎªÃ¿Ò»¸ödaemon·ÖÅäÒ»¸ö¿ØÖÆ×é,´ïµ½Ò»×éÒ»×éµÄ°´ÕÕÏàÒÀĞÔÀ´Æô¶¯¡£
-°´ĞèÆô¶¯
-initÔÚÏµÍ³Æô¶¯Ê±£¬»áÆô¶¯ËùÓĞÔ¤ÉèÎªÆô¶¯µÄ·şÎñ½ø³Ì£¬²¢ÇÒÏµÍ³±ØĞëµÈ´ıËùÓĞµÄ·şÎñ¶¼Æô¶¯¾ÍĞ÷Ö®ºó²Å»áÔÊĞíÓÃ»§µÇÂ¼²Ù×÷£¬ÕâÑù»áÈÃÏµÍ³Æô¶¯ËÙ¶È·Ç³£Âı£¬²¢ÇÒÀË·ÑÏµÍ³×ÊÔ´¡£
-systemd¾Í²ÉÓÃÁË°´ĞèÆô¶¯£¬ÔÚ¿ª»úÊ±£¬×öµ½²»ĞèÒªµÄ·şÎñ¾Í²»Æô¶¯£¬ÔÚÓÃµ½Ö®ºó²Å»ØÈ¥ÆôÓÃ£¬È»ºóÊ¹ÓÃÍê±ÏºóÒ»¶ÎÊ±¼äºó¾ÍÓÖ»á¹Ø±Õ¡£
-Ö§³Ö¿ìÕÕÓë×´Ì¬»Ö¸´
-systemdÄÜ¹»½«ÏµÍ³µ±Ç°µÄ×´Ì¬±£´æÎª¿ìÕÕ´æÖüÏÂÀ´£¬²¢ÇÒÔÚĞèÒªÊ±»Ö¸´µ±Ç°ÏµÍ³×´Ì¬¡£
-target
-ÔÚsystemdÖĞ£¬½«Ô­À´sysV£¬upstartÒ»Ö±±£ÁôµÄrun level¸ÄÎªÁËtargetÕâÖÖĞÎÊ½£¬µ«ÊÇtarget²¢Ã»ÓĞrun level»®·ÖÎª0-6£¬¶øÊÇ¸ü¼ÓÏ¸ÖÂµÄ·ÖÁË·Ç³£¶àµÄtarget¡£
-SysVÆô¶¯¼¶±ğ SystemdÄ¿±ê ×¢ÊÍ
-0 runlevel0.target, poweroff.target ÖĞ¶ÏÏµÍ³£¨halt£©
-1, s, single runlevel1.target, rescue.target µ¥ÓÃ»§Ä£Ê½
-2, 4 runlevel2.target, runlevel4.target, multi-user.target ÓÃ»§×Ô¶¨ÒåÆô¶¯¼¶±ğ£¬Í¨³£Ê¶±ğÎª¼¶±ğ3¡£
-3 runlevel3.target, multi-user.target ¶àÓÃ»§£¬ÎŞÍ¼ĞÎ½çÃæ¡£ÓÃ»§¿ÉÒÔÍ¨¹ıÖÕ¶Ë»òÍøÂçµÇÂ¼¡£
-5 runlevel5.target, graphical.target ¶àÓÃ»§£¬Í¼ĞÎ½çÃæ¡£¼Ì³Ğ¼¶±ğ3µÄ·şÎñ£¬²¢Æô¶¯Í¼ĞÎ½çÃæ·şÎñ¡£
-6 runlevel6.target, reboot.target ÖØÆô
-emergency emergency.target ¼±¾ÈÄ£Ê½£¨Emergency shell£©
-systemdÆô¶¯Á÷³ÌÍ¼
+### grub  
+å¤§å®¶éƒ½çŸ¥é“åœ¨è®¡ç®—æœºä»biosä¸­è¯»å–åˆ°å¼€æœºå¯åŠ¨é¡ºåºä¹‹åæŒ‰åºå»è¯»å–MBRçš„è¿‡ç¨‹æˆ‘ä»¬ç§°ä¸ºboot lorderï¼Œè®¡ç®—æœºåœ¨è¿™ä¸ªé˜¶æ®µä¼šå»è¯»å–MBRä¸­å äº†446Byteçš„boot loaderä¸­çš„ç¨‹åºï¼Œè€Œåœ¨Centosçš„å‘è¡Œç‰ˆä¸­åŸºæœ¬ä¸Šéƒ½æ˜¯GRUBè¿™ä¸ªç¨‹åºã€‚  
+446Byteæœ‰å¤šå°‘å¤§å‘¢ï¼Ÿ446ä¸ªè‹±æ–‡å­—ç¬¦ï¼Œè¦åœ¨è¿™ä¹ˆå°çš„ç©ºé—´ä¸­å­˜æ”¾ä¸€ä¸ªåŠŸèƒ½å¦‚æ­¤å¼ºå¤§çš„ç¨‹åºï¼Œæ˜¯æ€ä¹ˆåšåˆ°çš„å‘¢ï¼Ÿ  
+grubåˆ†ä¸ºä¸‰éƒ¨åˆ†ï¼Œä¸ºstage1ï¼Œstage1.5å’Œstage2ï¼Œstage1å­˜æ”¾åœ¨boot lorderä¸­ï¼Œstage1æŒ‡å‘ç£ç›˜ä¸­çš„å­˜æ”¾1.5å’Œ2çš„ç›®å½•ï¼ˆä¸€èˆ¬ä¸ºbootï¼‰ï¼Œç„¶åé€šè¿‡stage1.5æ–‡ä»¶çš„ç®€å•é©±åŠ¨æ¥è·å¾—/bootçš„å†…å®¹å¾—åˆ°stage2ã€‚  
+![image](https://github.com/billxq/notes/blob/master/images/5284.png)  
 
-systemctlÃüÁî
-systemctl [options]
-show [NAME.unittype]£ºÏÔÊ¾Ö¸¶¨·şÎñ×´Ì¬»òµ±Ç°ÔÊĞíµÄ·şÎñÁĞ±í¡£
-status [NAME.unittype]£º²é¿´Ö¸¶¨unit×´Ì¬¡£
-list-units [¡ªtype TYPE] [¡ªall]£º²é¿´Ö¸¶¨unitÀàĞÍµÄload£¬»î¶¯×´Ì¬£¬ÔËĞĞ×´Ì¬£¬¼òÊö¡£
-list-unit-files ¡ªtype TYPE [¡ªall]:²é¿´Ö¸¶¨unitÀàĞÍµÄÆô¶¯×´Ì¬£¬ÊÇ·ñÎª¿ª»ú×ÔÆôµÈ¡£
+### grubçš„è®¾å®šæ–‡ä»¶  
+/boot/grub/grub.conf  
+æœ‰äº›bootç›®å½•ä¸­ä¼šæœ‰menu.lstæ–‡ä»¶ï¼Œä»”ç»†çœ‹å“¦è¿™ä¸ªæ–‡ä»¶æ˜¯é€šè¿‡è½¯é“¾æ¥çš„å½¢å¼è¿åˆ°grub.confæ–‡ä»¶å»çš„ã€‚  
+*ä¸»è¦å±æ€§ï¼š*  
+default=0   é»˜è®¤å¯åŠ¨çš„ç³»ç»Ÿï¼Œ0ä»£è¡¨ç¬¬ä¸€ä¸ªã€‚  
+timeout=5   è¶…æ—¶æ—¶é—´ã€‚  
+splashimage=(hd0,6)/boot/grub/splash.xpm.gz  grubçš„èƒŒæ™¯ç”»é¢ï¼Œè¿™é‡Œä¸ºæŒ‡æ˜äº†splash.xpmè¿™å¼ å›¾ç‰‡~  
+hiddenmenu  æ˜¯å¦éšè—grubçš„å¯åŠ¨èœå•ã€‚  
+title Fedora Core (2.6.11-1.1369_FC4)   è¿™ä¸ªå°±æ˜¯æˆ‘ä»¬åœ¨grubç•Œé¢çœ‹åˆ°çš„ç¬¬ä¸€ä¸ªé¡µé¢çš„é€‰é¡¹å†…å®¹å•¦~  
+        root (hd0,6)    æŒ‡å®šè¿™ä¸ªç³»ç»Ÿçš„æ ¹ç›®å½•  
+        kernel /boot/vmlinuz-2.6.11-1.1369_FC4 ro   root=LABEL=/    æŒ‡å®šæ ¸å¿ƒä»¥åŠrootfs  
+        initrd /boot/initrd-2.6.11-1.1369_FC4.img   æŒ‡å®šinitramfs  
+title WinXp     è¿™ä¸ªå°±æ˜¯ç¬¬äºŒä¸ªå•¦ï¼ŒXPå“¦~  
+        rootnoverify (hd0,0)    ç±»ä¼¼rootï¼Œä½†æ˜¯ä¸æµ‹è¯•å®‰è£…è¯¥åˆ†åŒºã€‚  
+        chainloader +1      GRUBè¯»å…¥åˆ†åŒºçš„ç¬¬ä¸€ä¸ªæ‰‡åŒºçš„å¼•å¯¼è®°å½•ã€‚  
+        
+### grubæ‰‹åŠ¨æŒ‡å®šå¼•å¯¼  
+grubå‘½ä»¤è¡Œä¸‹ï¼š  
+grub> find /PATHï¼šå¯ä»¥æŸ¥è¯¢æ˜¯å¦æœ‰è·¯å¾„ã€‚  
+grub> root (hd0,1)ï¼šæŒ‡å®šæ ¹è®¾å¤‡ã€‚  
+grub> kernel /vmlinux-version-relias.arch ro grub> root=ROOTFS_PATHï¼šæŒ‡å®šå†…æ ¸ã€‚  
+grub> initrd /initrd-version-relias.arch.imgï¼šæŒ‡å®šramfsæ–‡ä»¶ã€‚  
+grub> bootï¼šå¼€å§‹å¼•å¯¼ã€‚  
 
-start [NAME.unittype]£ºÆô¶¯Ö¸¶¨unit¡£
-stop [NAME.unittype]£ºÍ£Ö¹Ö¸¶¨unit¡£
-restart [NAME.unittype]:ÖØĞÂÆô¶¯unit¡£
-reload [NAME.unittype]£ºÖØĞÂ¼ÓÔØunit¡£
-reset [NAME.unittype]£º»¹Ô­ÉèÖÃunit¡£
-try-restart [NAME.unittype]£ºÈç¹û·şÎñÔËĞĞÖĞ²Å»áÖØÆô
-enable [NAME.unittype]£ºÉèÖÃÎª¿ª»úÆô¶¯¡£
-disable [NAME.unittype]£ºÉèÖÃÎª¿ª»ú²»Æô¶¯¡£
-isolate [NAME.target]£ºÇĞ»»µ½Ö¸¶¨target¡£
-get-default [NAME.target]£º²éÑ¯¿ª»úÄ¬ÈÏtarget¡£
-set-default [NAME.target]£ºÉèÖÃ¿ª»úÄ¬ÈÏtarget¡£
-snapshot£º´´½¨Ò»¸ö¿ìÕÕ£¬´´½¨Íê³ÉºóÔÚÏÂ´ÎÖØÆôºó£¬ÏµÍ³»á×Ô¶¯»Ø¸´¿ìÕÕ×´Ì¬¡£
-hibernate£ºĞİÃßÄ£Ê½£¬°ÑĞÅÏ¢Ğ´Èëµ½ÎÄ¼şÖĞ,Ò²¾ÍÊÇÓ²ÅÌÖĞ,²»»áÓĞ¶Ïµç¶ªÊ§Êı¾İµÄÎÊÌâ,µ«»Ö¸´Ê±×îÂı,ºÍÖØĞÂ¿ª»úÒ»Ñù¡£
-sleepp£ºË¯ÃßÄ£Ê½£¬°ÑĞÅÏ¢µ½´æµ½ÄÚ´æÖĞ,µ«²»ÄÜ¶Ïµç,¶ÏµçºóÊı¾İ¶ªÊ§,»Ö¸´×î¿ì¡£
-hybrid-sleep£º»ìºÏË¯ÃßÄ£Ê½¡£
-reboot£ºÖØÆô
-halt:¹Ø»ú
-systemdÎÄ¼ş
-/etc/systemd/system.conf£ºsystemdÉè¶¨µµ¡£
-/lib/systemd/system/NAME.UNIT£ºunit½Å±¾ÎÄ¼şÎ»ÖÃ¡£
-/etc/systemd/system/NAME.UNIT.wants£º´æ·ÅÁËÖ¸¶¨targetÒªÆô¶¯µÄËùÓĞ·şÎñ¡£
 
-ÎÒÃÇÀ´¿´Ò»ÏÂ/etc/systemd/system/Ä¿Â¼ÏÂÃæµ½µ×´æ·ÅÁËÊ²Ã´ÎÄ¼ş¡£
+### grubå®‰è£…ä¸ä¿®å¤  
+å‘½ä»¤è¡Œä¸­ï¼š  
+ grub-install --root-directory=/boot /dev/sda ï¼šæŒ‡å®šbootç›®å½•ä¸stageè¦å†™å…¥çš„ç£ç›˜ã€‚  
+grubå‘½ä»¤è¡Œä¸­ï¼š  
+grub> chroot /mnt/sysimage ï¼šæŒ‚è½½çœŸæ­£çš„rootfsã€‚  
+grub> root (hd0,1)ï¼šæŒ‡å®šbootæ‰€åœ¨çš„æ ¹ç›®å½•ã€‚  
+grub> setup (hd0)ï¼šå°†stage1å†™å…¥åˆ°MBRä¸­ã€‚  
 
-[root@xiao ~]# ll /etc/systemd/system/
-total 32
-drwxr-xr-x. 2 root root 4096 Nov 21  2014 basic.target.wants
-lrwxrwxrwx. 1 root root   37 Nov 21  2014 default.target -> /lib/systemd/system/multi-user.target   ×¢ÒâÕâ¸ö
-drwxr-xr-x. 2 root root 4096 Nov 21  2014 default.target.wants
-drwxr-xr-x. 2 root root 4096 Nov 21  2014 getty.target.wants
-drwxr-xr-x. 2 root root 4096 Apr  8 14:29 multi-user.target.wants
-drwxr-xr-x. 2 root root 4096 Nov 21  2014 printer.target.wants
-drwxr-xr-x. 2 root root 4096 Nov 21  2014 sockets.target.wants
-drwxr-xr-x. 2 root root 4096 Mar 22 17:48 sysinit.target.wants
-drwxr-xr-x. 2 root root 4096 Nov 21  2014 system-update.target.wants
-´ÓÕâ¸öÄ¿Â¼ÎÒÃÇ¿ÉÒÔ¿´µ½£¬ÆäÊµÏµÍ³µ±Ç°ËùÔËĞĞµÄtargetÊÇÍ¨¹ıÈíÁ´½ÓµÄĞÎÊ½Á´½Óµ½/lib/systemd/system/Ä¿Â¼ÏÂµÄtargetÎÄ¼ş£¬»ùÓÚÕâÖÖ·½Ê½£¬
-ÎÒÃÇ¾Í¿ÉÒÔÍ¨¹ıÊÖ¶¯À´ÇĞ»»target¡£
+### Centos7çš„å¼€æœºå¯åŠ¨æµç¨‹  
+ä¸Centos5ï¼Œ6ç›¸æ¯”ï¼ŒCentos7å°†ç³»ç»Ÿå¯åŠ¨çš„ç¬¬ä¸€æ”¯ç¨‹åºä»initå˜æˆsystemdï¼Œsystemdå¹¶ä¸æ˜¯ä¸€ä¸ªçº¯ç²¹çš„initç³»ç»Ÿï¼Œè€Œä¸”è¿˜èƒ½ç®¡ç†ç³»ç»Ÿçš„å„ç§daemonï¼Œå¹¶æœ‰ç”¨çš„å¤šä¸ªæ–°ç‰¹æ€§ä¸åŠŸèƒ½ã€‚  
+  â— æ”¯æŒå¹³è¡Œå¯åŠ¨æœåŠ¡ï¼Œå¹¶æŒ‰ç…§ç›¸ä¾æ€§å¯åŠ¨ç¨‹åº  
+  â— æŒ‰éœ€å¯åŠ¨  
+  â— æ”¯æŒå¿«ç…§ä¸çŠ¶æ€æ¢å¤  
+  â— c groupé¢„è®¾é™åˆ¶ç¡¬ä»¶èµ„æº â€¦  
+ Â 
+### æ”¯æŒå¹³è¡Œå¯åŠ¨æœåŠ¡ï¼Œå¹¶æŒ‰ç…§ç›¸ä¾æ€§å¯åŠ¨ç¨‹åº  
+å¯¹æ¯”initçš„è„šæœ¬å¯åŠ¨ï¼Œsystemdå¤§èƒ†çš„å°†æ‰€æœ‰éœ€è¦å¯åŠ¨çš„éƒ½åˆ†ä¸ºä¸€ä¸ªä¸€ä¸ªçš„unitï¼Œå¹¶ä»¥å¯¹åº”çš„åç¼€æ¥åŒºåˆ†ï¼Œå¤§è‡´åˆ†ä¸ºï¼š  
+  â— ç³»ç»ŸæœåŠ¡ï¼ˆ.serviceï¼‰  
+  â— æŒ‚è½½ç‚¹ï¼ˆ.mountï¼‰  
+  â— socketsï¼ˆ.socketsï¼‰  
+  â— ç³»ç»Ÿè®¾å¤‡ï¼ˆ.deviceï¼‰  
+  â— äº¤æ¢åˆ†åŒºï¼ˆ.swapï¼‰  
+  â— æ–‡ä»¶è·¯å¾„ï¼ˆ.pathï¼‰  
+  â— å¯åŠ¨ç›®æ ‡ï¼ˆ.targetï¼‰  
+  â— systemdè®¡æ—¶å™¨ï¼ˆ.timerï¼‰  
+systemdä¼šä¸ºæ¯ä¸€ä¸ªéœ€è¦å¯åŠ¨çš„æœåŠ¡å¯åŠ¨ä¸€ä¸ªå¥—æ¥å­—ï¼Œæ¥ä½¿ä¸åŒçš„daemonä¹‹é—´å¯ä»¥é€šä¿¡ï¼Œå¹¶ä¸ºæ¯ä¸€ä¸ªdaemonåˆ†é…ä¸€ä¸ªæ§åˆ¶ç»„,è¾¾åˆ°ä¸€ç»„ä¸€ç»„çš„æŒ‰ç…§ç›¸ä¾æ€§æ¥å¯åŠ¨ã€‚  
 
-[root@xiao system]#rm -f default.target
-[root@xiao system]#ln -s /lib/systemd/system/graphical.target default.target
+### æŒ‰éœ€å¯åŠ¨  
+initåœ¨ç³»ç»Ÿå¯åŠ¨æ—¶ï¼Œä¼šå¯åŠ¨æ‰€æœ‰é¢„è®¾ä¸ºå¯åŠ¨çš„æœåŠ¡è¿›ç¨‹ï¼Œå¹¶ä¸”ç³»ç»Ÿå¿…é¡»ç­‰å¾…æ‰€æœ‰çš„æœåŠ¡éƒ½å¯åŠ¨å°±ç»ªä¹‹åæ‰ä¼šå…è®¸ç”¨æˆ·ç™»å½•æ“ä½œï¼Œè¿™æ ·ä¼šè®©ç³»ç»Ÿå¯åŠ¨é€Ÿåº¦éå¸¸æ…¢ï¼Œå¹¶ä¸”æµªè´¹ç³»ç»Ÿèµ„æºã€‚  
+systemdå°±é‡‡ç”¨äº†æŒ‰éœ€å¯åŠ¨ï¼Œåœ¨å¼€æœºæ—¶ï¼Œåšåˆ°ä¸éœ€è¦çš„æœåŠ¡å°±ä¸å¯åŠ¨ï¼Œåœ¨ç”¨åˆ°ä¹‹åæ‰å›å»å¯ç”¨ï¼Œç„¶åä½¿ç”¨å®Œæ¯•åä¸€æ®µæ—¶é—´åå°±åˆä¼šå…³é—­ã€‚  
+
+### æ”¯æŒå¿«ç…§ä¸çŠ¶æ€æ¢å¤  
+systemdèƒ½å¤Ÿå°†ç³»ç»Ÿå½“å‰çš„çŠ¶æ€ä¿å­˜ä¸ºå¿«ç…§å­˜è´®ä¸‹æ¥ï¼Œå¹¶ä¸”åœ¨éœ€è¦æ—¶æ¢å¤å½“å‰ç³»ç»ŸçŠ¶æ€ã€‚  
+
+### target
+åœ¨systemdä¸­ï¼Œå°†åŸæ¥sysVï¼Œupstartä¸€ç›´ä¿ç•™çš„run levelæ”¹ä¸ºäº†targetè¿™ç§å½¢å¼ï¼Œä½†æ˜¯targetå¹¶æ²¡æœ‰run levelåˆ’åˆ†ä¸º0-6ï¼Œè€Œæ˜¯æ›´åŠ ç»†è‡´çš„åˆ†äº†éå¸¸å¤šçš„targetã€‚ ![images](https://github.com/billxq/notes/blob/master/images/QQ20170528231553.jpg)  
+ Â 
+
+### systemdå¯åŠ¨æµç¨‹å›¾  
+![image](https://github.com/billxq/notes/blob/master/images/5283.jpeg)  
+
+### systemctlå‘½ä»¤
+systemctl [options]  
+
+    show [NAME.unittype]ï¼šæ˜¾ç¤ºæŒ‡å®šæœåŠ¡çŠ¶æ€æˆ–å½“å‰å…è®¸çš„æœåŠ¡åˆ—è¡¨ã€‚  
+    status [NAME.unittype]ï¼šæŸ¥çœ‹æŒ‡å®šunitçŠ¶æ€ã€‚  
+    list-units [--type TYPE] [--all]ï¼šæŸ¥çœ‹æŒ‡å®šunitç±»å‹çš„loadï¼Œæ´»åŠ¨çŠ¶æ€ï¼Œè¿è¡ŒçŠ¶æ€ï¼Œç®€è¿°ã€‚  
+    list-unit-files --type TYPE [--all]:æŸ¥çœ‹æŒ‡å®šunitç±»å‹çš„å¯åŠ¨çŠ¶æ€ï¼Œæ˜¯å¦ä¸ºå¼€æœºè‡ªå¯ç­‰ã€‚  
+    start [NAME.unittype]ï¼šå¯åŠ¨æŒ‡å®šunitã€‚
+    stop [NAME.unittype]ï¼šåœæ­¢æŒ‡å®šunitã€‚
+    restart [NAME.unittype]:é‡æ–°å¯åŠ¨unitã€‚
+    reload [NAME.unittype]ï¼šé‡æ–°åŠ è½½unitã€‚
+    reset [NAME.unittype]ï¼šè¿˜åŸè®¾ç½®unitã€‚
+    try-restart [NAME.unittype]ï¼šå¦‚æœæœåŠ¡è¿è¡Œä¸­æ‰ä¼šé‡å¯
+
+    enable [NAME.unittype]ï¼šè®¾ç½®ä¸ºå¼€æœºå¯åŠ¨ã€‚
+    disable [NAME.unittype]ï¼šè®¾ç½®ä¸ºå¼€æœºä¸å¯åŠ¨ã€‚
+
+    isolate [NAME.target]ï¼šåˆ‡æ¢åˆ°æŒ‡å®štargetã€‚
+    get-default [NAME.target]ï¼šæŸ¥è¯¢å¼€æœºé»˜è®¤targetã€‚
+    set-default [NAME.target]ï¼šè®¾ç½®å¼€æœºé»˜è®¤targetã€‚
+
+    snapshotï¼šåˆ›å»ºä¸€ä¸ªå¿«ç…§ï¼Œåˆ›å»ºå®Œæˆååœ¨ä¸‹æ¬¡é‡å¯åï¼Œç³»ç»Ÿä¼šè‡ªåŠ¨å›å¤å¿«ç…§çŠ¶æ€ã€‚
+
+    hibernateï¼šä¼‘çœ æ¨¡å¼ï¼ŒæŠŠä¿¡æ¯å†™å…¥åˆ°æ–‡ä»¶ä¸­,ä¹Ÿå°±æ˜¯ç¡¬ç›˜ä¸­,ä¸ä¼šæœ‰æ–­ç”µä¸¢å¤±æ•°æ®çš„é—®é¢˜,ä½†æ¢å¤æ—¶æœ€æ…¢,å’Œé‡æ–°å¼€æœºä¸€æ ·ã€‚
+    sleeppï¼šç¡çœ æ¨¡å¼ï¼ŒæŠŠä¿¡æ¯åˆ°å­˜åˆ°å†…å­˜ä¸­,ä½†ä¸èƒ½æ–­ç”µ,æ–­ç”µåæ•°æ®ä¸¢å¤±,æ¢å¤æœ€å¿«ã€‚
+    hybrid-sleepï¼šæ··åˆç¡çœ æ¨¡å¼ã€‚
+    rebootï¼šé‡å¯
+    halt:å…³æœº
+
+### systemdæ–‡ä»¶
+/etc/systemd/system.confï¼šsystemdè®¾å®šæ¡£ã€‚  
+/lib/systemd/system/NAME.UNITï¼šunitè„šæœ¬æ–‡ä»¶ä½ç½®ã€‚  
+/etc/systemd/system/NAME.UNIT.wantsï¼šå­˜æ”¾äº†æŒ‡å®štargetè¦å¯åŠ¨çš„æ‰€æœ‰æœåŠ¡ã€‚  
+
+æˆ‘ä»¬æ¥çœ‹ä¸€ä¸‹/etc/systemd/system/ç›®å½•ä¸‹é¢åˆ°åº•å­˜æ”¾äº†ä»€ä¹ˆæ–‡ä»¶ã€‚  
+
+    [root@xiao ~]# ll /etc/systemd/system/
+    total 32
+    drwxr-xr-x. 2 root root 4096 Nov 21  2014 basic.target.wants
+    lrwxrwxrwx. 1 root root   37 Nov 21  2014 default.target -> /lib/systemd/system/multi-user.target   æ³¨æ„è¿™ä¸ª
+    drwxr-xr-x. 2 root root 4096 Nov 21  2014 default.target.wants
+    drwxr-xr-x. 2 root root 4096 Nov 21  2014 getty.target.wants
+    drwxr-xr-x. 2 root root 4096 Apr  8 14:29 multi-user.target.wants
+    drwxr-xr-x. 2 root root 4096 Nov 21  2014 printer.target.wants
+    drwxr-xr-x. 2 root root 4096 Nov 21  2014 sockets.target.wants
+    drwxr-xr-x. 2 root root 4096 Mar 22 17:48 sysinit.target.wants
+    drwxr-xr-x. 2 root root 4096 Nov 21  2014 system-update.target.wants
+
+ä»è¿™ä¸ªç›®å½•æˆ‘ä»¬å¯ä»¥çœ‹åˆ°ï¼Œå…¶å®ç³»ç»Ÿå½“å‰æ‰€è¿è¡Œçš„targetæ˜¯é€šè¿‡è½¯é“¾æ¥çš„å½¢å¼é“¾æ¥åˆ°/lib/systemd/system/ç›®å½•ä¸‹çš„targetæ–‡ä»¶ï¼ŒåŸºäºè¿™ç§æ–¹å¼ï¼Œ
+æˆ‘ä»¬å°±å¯ä»¥é€šè¿‡æ‰‹åŠ¨æ¥åˆ‡æ¢targetã€‚  
+
+    [root@xiao system]#rm -f default.target
+    [root@xiao system]#ln -s /lib/systemd/system/graphical.target default.target
