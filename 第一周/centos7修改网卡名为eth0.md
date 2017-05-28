@@ -1,15 +1,18 @@
-ÊäÈëÈçÏÂÃüÁî£¬½øÈë¶ÔÓ¦Ä¿Â¼£¬±à¼­ÎÄ¼ş£º  
+è¾“å…¥å¦‚ä¸‹å‘½ä»¤ï¼Œè¿›å…¥å¯¹åº”ç›®å½•ï¼Œç¼–è¾‘æ–‡ä»¶ï¼š  
 1.vim /etc/sysconfig/grub
-È»ºó£¬ÍùÕâ¸öÎÄ¼şÖĞÌí¼Ó¡°net.ifnames=0 biosdevname=0¡±ÄÚÈİ£¬ÈçÏÂÍ¼ËùÊ¾£º  
+ç„¶åï¼Œå¾€è¿™ä¸ªæ–‡ä»¶ä¸­æ·»åŠ â€œnet.ifnames=0 biosdevname=0â€å†…å®¹ï¼Œå¦‚ä¸‹å›¾æ‰€ç¤ºï¼š  
 ![image](https://github.com/billxq/notes/blob/master/images/0.png)
 
-ÉÏÍ¼ÖĞ£¬ºì¿ò²¿·ÖÊÇÎÒËùÌí¼ÓµÄÄÚÈİ£¨×¢ÒâËüµÄÎ»ÖÃ£©¡£
-½ô½Ó×Å£¬Ö´ĞĞÈçÏÂÃüÁî£º
+ä¸Šå›¾ä¸­ï¼Œçº¢æ¡†éƒ¨åˆ†æ˜¯æˆ‘æ‰€æ·»åŠ çš„å†…å®¹ï¼ˆæ³¨æ„å®ƒçš„ä½ç½®ï¼‰ã€‚
+ç´§æ¥ç€ï¼Œæ‰§è¡Œå¦‚ä¸‹å‘½ä»¤ï¼š
 
 1.grub2-mkconfig -o /boot/grub2/grub.cfg  
-Ğ§¹ûÈçÏÂ£º  
+æ•ˆæœå¦‚ä¸‹ï¼š  
 ![image](https://github.com/billxq/notes/blob/master/images/1.png)
 
 
-È»ºó£¬ÖØÆôÏµÍ³ºó²é¿´Íø¿¨Ãû³Æ£º  
+ç„¶åï¼Œé‡å¯ç³»ç»ŸåæŸ¥çœ‹ç½‘å¡åç§°ï¼š  
 ![image](https://github.com/billxq/notes/blob/master/images/2.png)
+
+### æ³¨æ„ï¼š Â 
+é‡å¯åï¼Œéœ€è¦è¿›å…¥/etc/sysconfig/network-scriptsç›®å½•ï¼Œä¿®æ”¹ifcfg-ens33ä¸ºifcfg-eth0ï¼Œç„¶åç¼–è¾‘æ­¤æ–‡ä»¶ï¼ŒæŠŠDEVICEå’ŒNAMEçš„å€¼è®¾ä¸ºeth0.
