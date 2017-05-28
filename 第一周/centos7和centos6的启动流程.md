@@ -130,7 +130,9 @@ systemd就采用了按需启动，在开机时，做到不需要的服务就不�
 systemd能够将系统当前的状态保存为快照存贮下来，并且在需要时恢复当前系统状态。  
 
 ### target
-在systemd中，将原来sysV，upstart一直保留的run level改为了target这种形式，但是target并没有run level划分为0-6，而是更加细致的分了非常多的target。 ![images](https://github.com/billxq/notes/blob/master/images/QQ20170528231553.jpg)  
+在systemd中，将原来sysV，upstart一直保留的run level改为了target这种形式，但是target并没有run level划分为0-6，而是更加细致的分了非常多的target。
+
+![images](https://github.com/billxq/notes/blob/master/images/QQ20170528231553.jpg)  
   
 
 ### systemd启动流程图  
